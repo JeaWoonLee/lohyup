@@ -1,0 +1,6 @@
+from lostark.auction.crawl_lostark_market import crawl_lostark_market_batch
+from lostark.market.crawl_lostark_auction import crawl_lostark_auction_batch
+
+
+crawl_lostark_market_batch()
+crawl_lostark_auction_batch()
