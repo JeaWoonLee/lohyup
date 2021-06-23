@@ -1,3 +1,5 @@
+import pymysql as pymysql
+
 from lostark.crawler.loastark_request import LostArkMarketRequest, LostArkMarketRequestParameter
 from lostark.crawler.parser.market_parser import MarketHtmlParser
 from lostark.crawler.request.parameters.first_category import FirstCategory
@@ -14,10 +16,11 @@ class LostArkMarketCrawler:
 
     @classmethod
     def crawl_lostark_market_batch(cls):
-        market_item_list = cls.lostark_market_crawl()
-
-        for market_item in market_item_list:
-            print(market_item.to_string())
+        db_connection = cls.get_db_connection()
+        # market_item_list = cls.lostark_market_crawl()
+        #
+        # for market_item in market_item_list:
+        #     print(market_item.to_string())
 
     @classmethod
     def lostark_market_crawl(cls):
@@ -83,3 +86,15 @@ class LostArkMarketCrawler:
         """
         lostark_market_request = LostArkMarketRequest(lostark_request_parameter)
         return lostark_market_request.get()
+
+    @classmethod
+    def get_db_connection(cls):
+        conn = pymysql.connect(host="localhost", user="root", password="wpdns1290!", charset="utf8", port=3306)
+        curs = conn.cursor()
+        sql = "SELECT NOW(), %s, %s FROM DUAL"
+        curs.execute(sql, ('A', 'B'))
+        rows = curs.fetchall()
+        print(rows)
+        for row in rows:
+            print(row)
+        pass
