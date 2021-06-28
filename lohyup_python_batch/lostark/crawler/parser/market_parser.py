@@ -1,5 +1,6 @@
 import bs4
 
+from lostark.market.dto.item import Item
 from lostark.market.dto.market_item import MarketItem
 
 
@@ -25,7 +26,7 @@ class MarketHtmlParser:
         item_name = tbody.find('span', attrs={'class': 'name'})
         return item_name is not None
 
-    def get_item_list(self):
+    def get_market_item_list(self):
         """거래소 아이템 목록 추출
 
         :return: 거래소 아이템 목록
@@ -36,12 +37,33 @@ class MarketHtmlParser:
         for bs_tr in bs_tr_list:
             price_list = bs_tr.find_all('div', attrs={'class': 'price'})
             market_item = MarketItem(
-                name=bs_tr.find('span', attrs={'class': 'name'}).text,
-                yesterday_avg_price=price_list[0].find('em').text,
-                last_price=price_list[1].find('em').text,
-                lowest_price=price_list[2].find('em').text
+                item_name=bs_tr.find('span', attrs={'class': 'name'}).text,
+                item_no=bs_tr.find('button').attrs['data-itemno'],
+                yesterday_avg_price=price_list[0].find('em').text.replace(',', ''),
+                last_price=price_list[1].find('em').text.replace(',', ''),
+                lowest_price=price_list[2].find('em').text.replace(',', '')
             )
 
             market_item_list.append(market_item)
 
         return market_item_list
+
+    def get_item_list(self, first_category_no, second_category_no):
+        """
+        아이템 목록 추출
+        :return:
+        """
+        item_list = []
+        bs_tr_list = self.bs.find('tbody').find_all('tr')
+
+        for bs_tr in bs_tr_list:
+            price_list = bs_tr.find_all('div', attrs={'class': 'price'})
+            market_item = Item(
+                name=bs_tr.find('span', attrs={'class': 'name'}).text,
+                item_no=bs_tr.find('button').attrs['data-itemno'],
+                first_category_no=first_category_no,
+                second_category_no=second_category_no
+            )
+            item_list.append(market_item)
+
+        return item_list

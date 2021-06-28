@@ -7,6 +7,7 @@ class LostArkDbConfig:
     password = "wpdns1290!"
     charset = "utf8"
     port = 3306
+    database = 'lohyup'
 
     def get_connection(self):
         return pymysql.connect(
@@ -14,5 +15,6 @@ class LostArkDbConfig:
             user=self.user,
             password=self.password,
             charset=self.charset,
-            port=3306
+            port=self.port,
+            database=self.database
         )
